@@ -13,12 +13,26 @@ const socketio = new Server(server, {
   },
 });
 
-app.get("/hello", (req, res) => {
-  res.send("Hello World");
-});
+const connected = new Set();
 
 socketio.on("connection", (socket) => {
-  console.log(chalk.blue("New client connected", socket.id));
+  console.log(chalk.blue("Client connected", socket.id));
+  connected.add(socket.id);
+  socket.on("message", (message) => {
+    console.log(chalk.blue("New message", message));
+    // read all connected clients
+    connected.forEach((id) => {
+      if (id !== socket.id) {
+        console.log(id);
+        socket.to(id).emit("message", message);
+      }
+    });
+  });
+
+  socket.on("disconnect", () => {
+    console.log(chalk.red("Client disconnected", socket.id));
+    connected.delete(socket.id);
+  });
 });
 
 server.listen(PORT, () => {
