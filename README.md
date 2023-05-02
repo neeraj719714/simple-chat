@@ -12,4 +12,4 @@ after install step is completed run:
 `npm run start-server` in one terminal and 
 `npm start` in other.
 
-Now goto `http://localhost:8888` to see the app running.
+Now goto `http://localhost:8888` to see the app running
